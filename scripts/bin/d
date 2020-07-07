@@ -1,0 +1,22 @@
+#!/bin/bash
+
+while true
+do
+    echo "[*] Waiting for [$1]"
+
+    # debug process by 
+    prog=$1
+    pid=$(ps -ef | awk '{split($0,a,"[ ]+"); print a[2] ":" a[8] ":"}' | grep ":$prog:" | awk '{split($0,a,":"); print a[1]}')
+
+    while [ "$pid" == "" ]
+    do
+        sleep 1
+
+        pid=$(ps -ef | awk '{split($0,a,"[ ]+"); print a[2] ":" a[8] ":"}' | grep ":$prog:" | awk '{split($0,a,":"); print a[1]}')
+    done
+
+    echo "[*] Found pid: $pid"
+    echo "[*] Connecting..."
+
+    gdb -q -p $pid
+done

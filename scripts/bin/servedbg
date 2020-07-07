@@ -1,0 +1,12 @@
+#!/bin/bash
+
+if [ $# -ne 2 ]
+then
+    echo "Usage: $0 <service> <port>"
+    exit
+fi
+
+echo "Serving \"$1\" on :$2"
+
+gdb socat -exec="set follow-fork-mode child" \
+    -ex "r TCP-LISTEN:$2,reuseaddr,fork EXEC:\"$1\""
